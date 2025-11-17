@@ -21,6 +21,10 @@ public class Comerciante {
     @OneToOne
     @JoinColumn(name = "usuario_id", nullable = false, unique = true)
     private Usuario usuario;
+
+    @Column(unique = true, nullable = false)
+    private String cif;
+
     private String  nombreNegocio;
     private String direccion;
     private String descripcion;
