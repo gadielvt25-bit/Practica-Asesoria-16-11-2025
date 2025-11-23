@@ -4,6 +4,7 @@ import com.backend.backend.Security.Auth.dto.AuthResponseDTO;
 import com.backend.backend.Security.Auth.dto.LoginRequestDTO;
 import com.backend.backend.Security.Auth.dto.RegisterRequestDTO;
 import com.backend.backend.common.dto.ResponseDTO;
+import com.backend.backend.Security.Auth.AuthServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,4 +19,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthControllerImpl {
 
+    private final AuthServiceImpl authService;
+
+    @PostMapping("/register")
+    public ResponseEntity<ResponseDTO<AuthResponseDTO>> register(@Valid @RequestBody RegisterRequestDTO request) {
+        try {
+            AuthResponseDTO response = authService.register(request);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ResponseDTO.success("User registered successfully", response));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDTO.error(e.getMessage()));
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ResponseDTO<AuthResponseDTO>> login(@Valid @RequestBody LoginRequestDTO request) {
+        try {
+            AuthResponseDTO response = authService.login(request);
+            return ResponseEntity.ok(ResponseDTO.success("Login successful", response));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ResponseDTO.error(e.getMessage()));
+        }
+    }
 }
